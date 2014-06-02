@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <Winsvc.h>
-#define SLEEP_TIME 5000  // the time period in milliseconds between two consecutive queries for available memory
+#define SLEEP_TIME 3000  // the time period in milliseconds between two consecutive queries for available memory
 #define LOGFILE "D:\\Test Service Log.txt" 
 
 
@@ -13,15 +13,15 @@ int InitService();
 
 
  /*
- * Function:  WriteToLog 
+ * Function:  WLog 
  * ------------------------
- * write the amount of available physical memory in log file "C:\\Test Service Log.txt" 
+ * write the amount of available physical memory in log file "D:\\Test Service Log.txt" 
  *
  *  param: available physical memory
  *
  *  returns: write in log file         
  */
-int WriteToLog(char* str)
+int WLog(char* str)
 {
 	FILE* log;
 	log = fopen(LOGFILE, "a+");
@@ -56,7 +56,7 @@ void ServiceMain(int argc, char** argv)
     ServiceStatus.dwWaitHint           = 0; 
  
     hStatus = RegisterServiceCtrlHandler(
-		"MemoryStatus2", 
+		"Test Service", 
 		(LPHANDLER_FUNCTION)ControlHandler); 
     if (hStatus == (SERVICE_STATUS_HANDLE)0) 
     { 
@@ -83,7 +83,7 @@ void ServiceMain(int argc, char** argv)
 		char buffer[16];
 		GlobalMemoryStatus(&memory);
 		sprintf(buffer, "%d", memory.dwAvailPhys);
-		int result = WriteToLog(buffer);
+		int result = WLog(buffer);
 		if (result)
 		{
 			ServiceStatus.dwCurrentState       = SERVICE_STOPPED; 
@@ -106,12 +106,12 @@ void ServiceMain(int argc, char** argv)
  * --------------------
  * proceed to the initialization log file
  *   
- *  returns: adds the Monitoring started string to the log file
+ *  returns: adds the Service started string to the log file
  */
 int InitService() 
 { 
     int result;
-    result = WriteToLog("Monitoring started.");
+    result = WLog("Service started.");
     return(result); 
 } 
 
@@ -150,7 +150,7 @@ void ControlHandler(DWORD request)
     switch(request) 
     { 
         case SERVICE_CONTROL_STOP: 
-             WriteToLog("Monitoring stopped.");
+             WLog("Service stopped.");
 
             ServiceStatus.dwWin32ExitCode = 0; 
             ServiceStatus.dwCurrentState  = SERVICE_STOPPED; 
@@ -158,7 +158,7 @@ void ControlHandler(DWORD request)
             return; 
  
         case SERVICE_CONTROL_SHUTDOWN: 
-            WriteToLog("Monitoring stopped.");
+            WLog("Service stopped.");
 
             ServiceStatus.dwWin32ExitCode = 0; 
             ServiceStatus.dwCurrentState  = SERVICE_STOPPED; 
