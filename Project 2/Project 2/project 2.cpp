@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <Winsvc.h>
 #define SLEEP_TIME 5000  // the time period in milliseconds between two consecutive queries for available memory
-#define LOGFILE "C:\\Test Service Log.txt" 
+#define LOGFILE "D:\\Test Service Log.txt" 
 
 
 SERVICE_STATUS ServiceStatus; 
